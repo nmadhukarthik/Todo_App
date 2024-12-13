@@ -24,7 +24,7 @@ export const getTodo = async(req,res) => {
         res.status(200).json({message:"Todos fetched successfully",todos})
     } catch (error) {
         console.log(error)
-        res.status(400).json({message:"Error occured while fetching todos",error})
+        res.status(500).json({message:"Error occured while fetching todos",error})
     }
 }
 
@@ -37,7 +37,7 @@ export const updateTodo = async(req,res) => {
         res.status(200).json({message:"Todos updated successfully",todo})
     } catch (error) {
         console.log(error)
-        res.status(400).json({message:"Error occured while updating todos",error})
+        res.status(500).json({message:"Error occured while updating todos",error})
     }
 }
     
@@ -50,7 +50,7 @@ export const deleteTodo = async(req,res) => {
         res.status(200).json({message:"Todo deleted successfully"})
     } catch (error) {
         console.log(error)
-        res.status(400).json({message:"Error occured while updating todos",error})
+        res.status(500).json({message:"Error occured while deleting todos",error})
     }
 }
     
