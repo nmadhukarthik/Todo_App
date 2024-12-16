@@ -57,6 +57,7 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+    console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
     const { email, password } = req.body;
     try {
         if (!email || !password) {
@@ -71,7 +72,7 @@ export const login = async (req, res) => {
                 .status(400)
                 .json({ message: "Incorrect username or password" });
         }
-
+        console.log("Calling generateTokenAndSaveInCookies...");
         const token = await generateTokenAndSaveInCookies(user._id, res);
         res.status(200).json({
             message: "user logged in successfully",
