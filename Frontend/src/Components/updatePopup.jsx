@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
 
+const BACKENDURL = import.meta.env.VITE_BACKEND_URL;
+
 const UpdatePopup = ({ todo, onClose, onUpdate }) => {
     const [error, setError] = useState(null);
     const [newTodo, setNewTodo] = useState(todo.title || ""); // Initialize with current title
@@ -9,7 +11,7 @@ const UpdatePopup = ({ todo, onClose, onUpdate }) => {
     const updateTodo = async () => {
         try {
             const response = await axios.put(
-                `${import.meta.env.VITE_BACKEND_URL}/todo/update/${todo._id}`,
+                `${BACKENDURL}/todo/update/${todo._id}`,
                 { title: newTodo, date: dueDate, completed: todo.completed },
                 {
                     withCredentials: true,

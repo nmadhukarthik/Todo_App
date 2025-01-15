@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+const BACKENDURL = import.meta.env.VITE_BACKEND_URL;
+
 const Signup = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -14,7 +16,7 @@ const Signup = () => {
         e.preventDefault();
         try {
             const { data } = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/user/signup`,
+                `${BACKENDURL}/user/signup`,
                 {
                     username,
                     email,
@@ -100,7 +102,7 @@ const Signup = () => {
                                 </label>
                                 <input
                                     className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2"
-                                    type="text"
+                                    type="password"
                                     placeholder="Enter your password"
                                     required
                                     value={password}

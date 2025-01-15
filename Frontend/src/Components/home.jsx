@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import UpdatePopup from "./updatePopup";
+
+const BACKENDURL = import.meta.env.VITE_BACKEND_URL;
 
 const Home = () => {
     const [todos, setTodos] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [userName, setUserName] = useState("");
     const [newTodo, setNewtodo] = useState("");
     const [dueDate, setDueDate] = useState("");
     const [modalTodo, setModalTodo] = useState(null); // To track the todo being updated
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const fetchTodos = async () => {
             try {
                 setLoading(true);
                 const response = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/todo/fetchTodos`,
+                    `${BACKENDURL}/todo/fetchTodos`,
                     {
                         withCredentials: true,
                         headers: {
@@ -37,13 +41,18 @@ const Home = () => {
             }
         };
         fetchTodos();
+
+        const storedUsername = localStorage.getItem("username");
+        if (storedUsername) {
+            setUserName(storedUsername);
+        }
     }, []);
 
     const createTodo = async () => {
         try {
             if (!newTodo) return; //|| !dueDate
             const response = await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/todo/create`,
+                `${BACKENDURL}/todo/create`,
                 {
                     title: newTodo,
                     date: dueDate,
@@ -65,7 +74,7 @@ const Home = () => {
         const todo = todos.find((t) => t._id === id);
         try {
             const response = await axios.put(
-                `${import.meta.env.VITE_BACKEND_URL}/todo/update/${id}`,
+                `${BACKENDURL}/todo/update/${id}`,
                 {
                     ...todo,
                     completed: !todo.completed,
@@ -82,12 +91,9 @@ const Home = () => {
 
     const deleteTodo = async (id) => {
         try {
-            await axios.delete(
-                `${import.meta.env.VITE_BACKEND_URL}/todo/delete/${id}`,
-                {
-                    withCredentials: true,
-                }
-            );
+            await axios.delete(`${BACKENDURL}/todo/delete/${id}`, {
+                withCredentials: true,
+            });
             setTodos(todos.filter((t) => t._id !== id));
         } catch (error) {
             setError("Failed to delete todo");
@@ -96,12 +102,14 @@ const Home = () => {
 
     const logout = async () => {
         try {
-            await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/logout`, {
+            await axios.get(`${BACKENDURL}/user/logout`, {
                 withCredentials: true,
             });
             toast.success("Logged out successfully");
             localStorage.removeItem("jwt");
+            localStorage.removeItem("username");
             navigate("/login");
+            window.location.reload();
         } catch (error) {
             toast.error("Error logging out");
         }
@@ -119,6 +127,13 @@ const Home = () => {
     return (
         <div className="mt-10 bg-gray-100 max-w-lg lg:max-w-xl rounded-lg shadow-lg mx-8 sm:mx-auto p-6">
             <h1 className="text-2xl font-semibold text-center"> Todo App </h1>
+            <br />
+            {userName ? (
+                <h1 className="text-xl font-bold text-center">
+                    {" "}
+                    Hello, Welcome {userName.toUpperCase()} !{" "}
+                </h1>
+            ) : null}
             <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 m-4">
                 <input
                     className="flex-grow p-2 border rounded focus:outline-none"

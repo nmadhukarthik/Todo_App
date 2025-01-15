@@ -15,8 +15,15 @@ const App = () => {
                     path="/"
                     element={token ? <Home /> : <Navigate to={"/login"} />}
                 />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/login" element={<Login />} />
+                <Route
+                    path="/signup"
+                    element={!token ? <Signup /> : <Navigate to={"/"} />}
+                />
+                <Route
+                    path="/login"
+                    element={!token ? <Login /> : <Navigate to={"/"} />}
+                />
+
                 <Route path="*" element={<PageNotFound />} />
             </Routes>
             <Toaster />
