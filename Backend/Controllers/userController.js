@@ -58,7 +58,10 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
     // console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    // console.log("Request Body:", req.body);
+    email = email?.toLowerCase() || null;
+    // console.log(email);
     try {
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required" });
@@ -67,7 +70,7 @@ export const login = async (req, res) => {
         const user = await userSchemaModal
             .findOne({ email })
             .select("+password");
-        console.log("user:", user);
+        // console.log("user:", user);
         if (!user || !(await bcryptjs.compare(password, user.password))) {
             return res
                 .status(400)
